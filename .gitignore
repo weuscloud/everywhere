@@ -1,3 +1,5 @@
 *node_modules*
 *.ini
 *.lock
+*logs*
+*.jsondb

@@ -56,11 +56,14 @@ class GenericDB {
         }
     };
 
-    constructor(filePath, schema, secretKey) {
+    constructor(schema, secretKey) {
+        const modelName = this.constructor.name;
+        const defaultFilePath = `${modelName}.jsondb`;
+
         if (Object.keys(schema).length > 10) {
             throw new Error('E016');
         }
-        this.db = new JsonDB(filePath, secretKey);
+        this.db = new JsonDB(defaultFilePath, secretKey);
         this.schema = this.mergeRules(schema);
     }
 

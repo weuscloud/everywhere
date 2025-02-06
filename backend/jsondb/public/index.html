@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="notification.css">
+    <title>User Management</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="list-container">
+            <table id="user-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Password</th>
+                        <th>Avatar URL</th>
+                        <th>2FA Enabled</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="user-table-body"></tbody>
+            </table>
+        </div>
+        <div class="action-container">
+            <button id="add-button">Add User</button>
+            <button id="refresh-button">Refresh Data</button>
+        </div>
+    </div>
+    <div id="form-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">Add User</h2>
+            <form id="user-form">
+                <input type="hidden" id="user-id">
+                <label for="user-name">Name:</label>
+                <input type="text" id="user-name" required>
+                <label for="user-password">Password:</label>
+                <input type="password" id="user-password" required>
+                <label for="user-avatar-url">Avatar URL:</label>
+                <input type="text" id="user-avatar-url">
+                <label for="user-2fa-enabled">2FA Enabled:</label>
+                <input type="checkbox" id="user-2fa-enabled">
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+    <!-- 新增通知组件容器 -->
+    <div id="notification-container"></div>
+    <script src="notification.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -12,7 +12,7 @@ const {GenericDB,messageMap} = require('./db');
 const userModel = require('./UserModel');
 
 // 创建用户数据库实例
-const userDB = new GenericDB('users.json', userModel);
+const userDB = new GenericDB(userModel);
 
 // 通用的路由处理函数
 function createRoutes(app, db, basePath) {
