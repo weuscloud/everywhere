@@ -1,0 +1,7 @@
+[db]
+;yes no
+encrypt=yes
+;whole or value
+encryptionMethod=value
+secretKey=
+
