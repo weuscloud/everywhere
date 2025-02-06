@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:3000/users';
+const baseUrl =`${location.href}users`;
 const userTableBody = document.getElementById('user-table-body');
 const addButton = document.getElementById('add-button');
 const refreshButton = document.getElementById('refresh-button');

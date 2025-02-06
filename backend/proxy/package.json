@@ -1,0 +1,13 @@
+{
+  "name": "@backend/proxy",
+  "version": "1.0.0",
+  "main": "http.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "http-proxy": "^1.18.1"
+  }
+}

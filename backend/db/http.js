@@ -1,7 +1,8 @@
 // http_main.js
 const express = require('express');
 const app = express();
-const port = 3000;
+// 获取命令行传入的端口号
+const port = parseInt(process.argv[2], 10)||3000;
 
 // 解析 JSON 格式的请求体
 app.use(express.json());

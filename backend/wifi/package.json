@@ -1,5 +1,5 @@
 {
-  "name": "jsondb",
+  "name": "@backend/wifi",
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {},
@@ -10,6 +10,6 @@
   "dependencies": {
     "express": "^4.21.2",
     "ini": "^5.0.0",
-    "winston": "^3.17.0"
+    "qrcode": "^1.5.4"
   }
 }

@@ -1,0 +1,10 @@
+[main]
+protocol=https;https
+cert =./ssl/yours.pem
+key = ./ssl/yours.key
+[wifi]
+entry=/wifi
+port=3000
+[db]
+port=3001
+entry=/db

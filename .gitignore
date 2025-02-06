@@ -3,3 +3,6 @@
 *.lock
 *logs*
 *.jsondb
+*qrcode*
+*.pem
+*.key

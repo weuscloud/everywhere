@@ -1,0 +1,15 @@
+{
+  "name": "@backend/jsondb",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2",
+    "ini": "^5.0.0",
+    "winston": "^3.17.0"
+  }
+}
