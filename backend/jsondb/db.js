@@ -56,16 +56,14 @@ class GenericDB {
         }
     };
 
-    constructor(schema, secretKey) {
-        const modelName = this.constructor.name;
-        const defaultFilePath = `${modelName}.jsondb`;
-
+    constructor(filePath, schema, secretKey) {
         if (Object.keys(schema).length > 10) {
             throw new Error('E016');
         }
-        this.db = new JsonDB(defaultFilePath, secretKey);
+        this.db = new JsonDB(filePath, secretKey);
         this.schema = this.mergeRules(schema);
     }
+
 
     // 合并用户规则和内置规则的方法
     mergeRules(schema) {
