@@ -7,6 +7,7 @@ const port = parseInt(process.argv[2], 10)||3000;
 // 解析 JSON 格式的请求体
 app.use(express.json());
 app.use(express.static('public'));
+app.disable('x-powered-by');
 // 允许所有域名跨域访问
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');

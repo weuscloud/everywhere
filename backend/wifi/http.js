@@ -4,8 +4,11 @@ const path = require('path');
 const ini = require('ini');
 
 const app = express();
+app.disable('x-powered-by');
 const port = parseInt(process.argv[2], 10) || 3000;
 app.use(express.static('public'));
+
+
 // 读取 config.ini 文件
 const configFilePath = path.join(__dirname, 'config.ini');
 const config = ini.parse(fs.readFileSync(configFilePath, 'utf-8'));
@@ -15,10 +18,11 @@ app.get('/list', (req, res) => {
     const wifiList = [];
     // 遍历 config 对象
     for (const ssid in config) {
-        const password = config[ssid].password;
+        const {password,enabled} = config[ssid];
         // 生成二维码文件名
-        const qrCodeFileName = `${ssid}_qrcode.png`;
+        const qrCodeFileName = `/images/${ssid}_qrcode.png`;
         // 将每个 Wi-Fi 的信息添加到 wifiList 数组中
+        if(typeof enabled ==='undefined'||enabled===true)
         wifiList.push({
             ssid,
             qrCodeFileName,
