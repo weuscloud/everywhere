@@ -9,13 +9,7 @@ async function getWiFiInfo() {
         const data = await response.json();
         if (data.code === 200) {
             for (const d of data['wifiList']) {
-                const {ssid,qrCodeFileName}=d;
-                // 处理单个WiFi信息
-                const wifi = {
-                    ssid,
-                    qrCodeFileName
-                };
-                createQRCodeItem(wifi);
+                createQRCodeItem(d);
             }
         }
 
@@ -34,8 +28,37 @@ function createQRCodeItem(wifi) {
     img.src = `./${wifi.qrCodeFileName}`;
     img.alt = `${wifi.ssid} WiFi二维码`;
 
-    const caption = document.createElement('p');
-    caption.textContent = `WiFi名称: ${wifi.ssid}`;
+    const infoContainer = document.createElement('div');
+    infoContainer.classList.add('wifi-info-container');
+
+    // 创建 WIFI 名称的 label 和 input
+    const ssidLabel = document.createElement('label');
+    ssidLabel.textContent = 'WIFI名称：';
+    const ssidInput = document.createElement('input');
+    ssidInput.type = 'text';
+    ssidInput.value = wifi.ssid;
+    ssidInput.readOnly = true;
+    ssidLabel.appendChild(ssidInput);
+
+    // 创建 WIFI 密码的 label 和 input
+    const passwordLabel = document.createElement('label');
+    passwordLabel.textContent = 'WIFI密码：';
+    const passwordInput = document.createElement('input');
+    passwordInput.type = 'password';
+    passwordInput.value = wifi.password;
+    passwordInput.readOnly = true;
+    passwordInput.classList.add('password-input'); // 添加样式类
+    passwordInput.addEventListener('click', () => {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+        } else {
+            passwordInput.type = 'password';
+        }
+    });
+    passwordLabel.appendChild(passwordInput);
+
+    infoContainer.appendChild(ssidLabel);
+    infoContainer.appendChild(passwordLabel);
 
     const downloadButton = document.createElement('button');
     downloadButton.textContent = '下载二维码';
@@ -47,10 +70,9 @@ function createQRCodeItem(wifi) {
     });
 
     listItem.appendChild(img);
-    listItem.appendChild(caption);
+    listItem.appendChild(infoContainer);
     listItem.appendChild(downloadButton);
     qrCodeList.appendChild(listItem);
 }
-
 // 调用函数获取WiFi信息
 getWiFiInfo();

@@ -27,13 +27,18 @@ const messageMap = {
     'N004': '已获取所有记录'
 };
 
-// 配置日志
+// 配置 winston 日志
 const logger = winston.createLogger({
     level: 'info',
-    format: winston.format.json(),
+    format: winston.format.combine(
+        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        winston.format.printf(({ timestamp, level, message }) => {
+            return `[${timestamp}][${level}][${message}]`;
+        })
+    ),
     transports: [
-        new winston.transports.File({ filename: 'logs/GenericDB_error.log', level: 'error', maxsize: 100 * 1024 * 1024 }),
-        new winston.transports.File({ filename: 'logs/GenericDB_combined.log', maxsize: 100 * 1024 * 1024 })
+        new winston.transports.File({ filename: 'logs/db_error.log', level: 'error', maxsize: 100 * 1024 * 1024 }),
+        new winston.transports.File({ filename: 'logs/db_combined.log', maxsize: 100 * 1024 * 1024 })
     ]
 });
 

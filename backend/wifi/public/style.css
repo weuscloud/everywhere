@@ -66,3 +66,20 @@ main {
 .qr-code-item button:hover {
     background-color: #2980b9;
 }
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+input {
+    border: none; /* 去除边框 */
+    background-color: transparent; /* 背景透明 */
+    color: inherit; /* 继承文字颜色 */
+    outline: none; /* 去除聚焦时的轮廓 */
+}
+input[type='password']{
+    cursor: pointer;
+}
+.wifi-info-container{
+   padding-left: 100px;
+}

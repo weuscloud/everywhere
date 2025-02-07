@@ -3,6 +3,22 @@ const https = require('https');
 const fs = require('fs');
 const ini = require('ini');
 const statusCodes = require('./status_codes');
+const winston = require('winston');
+
+// 配置 winston 日志
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.combine(
+        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        winston.format.printf(({ timestamp, level, message }) => {
+            return `[${timestamp}][${level}][${message}]`;
+        })
+    ),
+    transports: [
+        new winston.transports.File({ filename: 'logs/proxy_error.log', level: 'error', maxsize: 100 * 1024 * 1024 }),
+        new winston.transports.File({ filename: 'logs/proxy_combined.log', maxsize: 100 * 1024 * 1024 })
+    ]
+});
 
 // 配置文件读取策略
 class ConfigReader {
@@ -15,7 +31,7 @@ class ConfigReader {
             const configFileContent = fs.readFileSync(this.configPath, 'utf-8');
             return ini.parse(configFileContent);
         } catch (error) {
-            console.error(`${statusCodes.E001}:`, error);
+            logger.error(`${statusCodes.E001}: ${error.message}`);
             throw new Error(statusCodes.E001);
         }
     }
@@ -26,7 +42,7 @@ class PathMapGenerator {
     generatePathMap(config) {
         const pathToConfigMap = {};
         for (const section in config) {
-            if (section!== 'main' && config[section].port && config[section].entry) {
+            if (section !== 'main' && config[section].port && config[section].entry) {
                 const path = config[section].entry;
                 pathToConfigMap[path] = {
                     port: parseInt(config[section].port, 10),
@@ -71,9 +87,23 @@ class HttpsServerCreationStrategy extends ServerCreationStrategy {
         }, handleRequest);
     }
 }
+
 // 请求处理函数
 function handleRequest(pathToConfigMap, req, res) {
-    console.log(req.url);
+    //查找IP
+    let clientIp = req.socket.remoteAddress;
+    const forwardedHeader = req.headers['forwarded'];
+    if (forwardedHeader) {
+        const parts = forwardedHeader.split(';');
+        for (const part of parts) {
+            if (part.startsWith('for=')) {
+                clientIp = part.slice(4).replace(/["']/g, '');
+                break;
+            }
+        }
+    }
+    logger.info(`[${clientIp}]${statusCodes.N002}: ${req.url}`);
+
     let targetConfig = null;
     for (const path in pathToConfigMap) {
         if (req.url.startsWith(path)) {
@@ -83,15 +113,10 @@ function handleRequest(pathToConfigMap, req, res) {
     }
 
     if (!targetConfig) {
+        logger.info(statusCodes.N004);
         res.statusCode = 404;
-        res.end('Not Found');
         return;
     }
-
-    // 设置 CORS 响应头
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     // 防止点击劫持
     res.setHeader('X-Frame-Options', 'DENY');
@@ -122,7 +147,7 @@ function handleRequest(pathToConfigMap, req, res) {
     });
 
     proxyReq.on('error', (error) => {
-        console.error(`${statusCodes.E007}:`, error);
+        logger.error(`${statusCodes.E007}: ${error.message}`);
         res.statusCode = 500;
         res.end('Internal Server Error');
     });
@@ -133,16 +158,20 @@ function handleRequest(pathToConfigMap, req, res) {
 // 验证主配置信息
 function validateMainConfig(mainConfig) {
     if (!mainConfig) {
+        logger.error(statusCodes.E002);
         throw new Error(statusCodes.E002);
     }
     if (!mainConfig.protocol) {
+        logger.error(statusCodes.E003);
         throw new Error(statusCodes.E003);
     }
     if (mainConfig.protocol === 'https') {
         if (!mainConfig.cert) {
+            logger.error(statusCodes.E004);
             throw new Error(statusCodes.E004);
         }
         if (!mainConfig.key) {
+            logger.error(statusCodes.E005);
             throw new Error(statusCodes.E005);
         }
     }
@@ -155,7 +184,7 @@ function readCertAndKey(certPath, keyPath) {
         const key = fs.readFileSync(keyPath);
         return { cert, key };
     } catch (error) {
-        console.error(`${statusCodes.E006}:`, error);
+        logger.error(`${statusCodes.E006}: ${error.message}`);
         throw new Error(statusCodes.E006);
     }
 }
@@ -191,12 +220,13 @@ function main() {
             handleRequest(pathToConfigMap, req, res);
         });
 
-        const port = protocol === 'https'? 443 : 80;
+        const port = protocol === 'https' ? 443 : 80;
         proxyServer.listen(port, () => {
-            console.log(`${statusCodes.N001}，端口: ${port}`);
+            logger.info(`${statusCodes.N001}，端口: ${port}`);
+            console.log(`[${protocol}]${statusCodes.N001}，端口: ${port}`);
         });
     } catch (error) {
-        console.error('Failed to start the proxy server:', error.message);
+        logger.error(`${error.message}`);
     }
 }
 

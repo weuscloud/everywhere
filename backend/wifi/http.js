@@ -11,7 +11,6 @@ const configFilePath = path.join(__dirname, 'config.ini');
 const config = ini.parse(fs.readFileSync(configFilePath, 'utf-8'));
 
 // 定义 /wifi 路由
-// 定义 /wifi 路由
 app.get('/list', (req, res) => {
     const wifiList = [];
     // 遍历 config 对象
@@ -22,7 +21,8 @@ app.get('/list', (req, res) => {
         // 将每个 Wi-Fi 的信息添加到 wifiList 数组中
         wifiList.push({
             ssid,
-            qrCodeFileName
+            qrCodeFileName,
+            password
         });
     }
 

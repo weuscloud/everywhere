@@ -16,16 +16,20 @@ const logMessageMap = {
     'E009': '无法创建初始数据文件'
 };
 
-// 配置日志
+// 配置 winston 日志
 const logger = winston.createLogger({
     level: 'info',
-    format: winston.format.json(),
+    format: winston.format.combine(
+        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        winston.format.printf(({ timestamp, level, message }) => {
+            return `[${timestamp}][${level}][${message}]`;
+        })
+    ),
     transports: [
         new winston.transports.File({ filename: 'logs/db_core_error.log', level: 'error', maxsize: 100 * 1024 * 1024 }),
         new winston.transports.File({ filename: 'logs/db_core_combined.log', maxsize: 100 * 1024 * 1024 })
     ]
 });
-
 // 配置文件路径
 const configFilePath = 'config.ini';
 

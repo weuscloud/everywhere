@@ -1,5 +1,5 @@
 [main]
-protocol=https;https
+protocol=https;http
 cert =./ssl/yours.pem
 key = ./ssl/yours.key
 [wifi]
