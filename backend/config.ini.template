@@ -1,0 +1,9 @@
+[wifi]
+entry=./wifi/http.js
+port=3000
+[users]
+port=3001
+entry=./users/http.js
+[proxy]
+port=443
+entry=./proxy/main.js
