@@ -9,7 +9,7 @@ const winston = require('winston');
 const logger = winston.createLogger({
     level: 'info',
     format: winston.format.combine(
-        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        winston.format.timestamp({ format: 'YYYY/MM/DD-HH:mm:ss' }),
         winston.format.printf(({ timestamp, level, message }) => {
             return `[${timestamp}][${level}][${message}]`;
         })
@@ -36,7 +36,8 @@ class ConfigReader {
         }
     }
 }
-
+const configReader = new ConfigReader('config.ini');
+const config = configReader.readConfig();
 // 路径映射生成策略
 class PathMapGenerator {
     generatePathMap(config) {
@@ -102,7 +103,7 @@ function handleRequest(pathToConfigMap, req, res) {
             }
         }
     }
-    logger.info(`[${clientIp}]${statusCodes.N002}: ${req.url}`);
+    logger.info(`(${clientIp})${statusCodes.N002}: ${req.url}`);
 
     let targetConfig = null;
     for (const path in pathToConfigMap) {
@@ -113,9 +114,15 @@ function handleRequest(pathToConfigMap, req, res) {
     }
 
     if (!targetConfig) {
-        logger.info(statusCodes.N004);
+        logger.error(`(${clientIp})${statusCodes.N004}: ${req.url}`);
         res.statusCode = 404;
         return;
+    }
+    if (config.main.DEBUG === true) {
+        // 设置 CORS 响应头
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     }
 
     // 防止点击劫持
@@ -192,9 +199,6 @@ function readCertAndKey(certPath, keyPath) {
 // 主函数
 function main() {
     try {
-        const configReader = new ConfigReader('config.ini');
-        const config = configReader.readConfig();
-
         const mainConfig = config.main;
         validateMainConfig(mainConfig);
 
