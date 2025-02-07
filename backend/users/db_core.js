@@ -255,4 +255,4 @@ class JsonDB {
     }
 }
 
-module.exports = { encryptData, decryptData, JsonDB,logMessageMap };
+module.exports = { ensureSecretKey,encryptData, decryptData, JsonDB,logMessageMap };

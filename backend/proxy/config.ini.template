@@ -1,10 +1,12 @@
 [main]
-protocol=https;http
-cert =./ssl/yours.pem
-key = ./ssl/yours.key
+protocol=https;https
+cert =./ssl/xxxx.pem
+key = ./ssl/xxxx.key
+DEBUG=false
+host=example.com
 [wifi]
 entry=/wifi
 port=3000
-[db]
+[data]
 port=3001
-entry=/db
+entry=/data

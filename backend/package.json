@@ -4,9 +4,7 @@
   "private": true,
   "main": "main.js",
   "workspaces": [
-    "jsondb",
-    "wifi",
-    "proxy"
+    "*"
   ],
   "scripts": {},
   "keywords": [],
